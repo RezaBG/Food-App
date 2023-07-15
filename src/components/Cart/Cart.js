@@ -8,7 +8,7 @@ import Checkout from "./Checkout";
 
 const Cart = (props) => {
   const [isCheckout, setIsCheckout] = useState(false);
-  const [isSubmiting, setIsSubmiting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [didSubmit, setDidSubmit] = useState(false);
   const cartCtx = useContext(CartContext);
 
@@ -20,7 +20,7 @@ const Cart = (props) => {
   };
 
   const cartItemAddHandler = (item) => {
-    cartCtx.addItem({ ...item, amount: 1 });
+    cartCtx.addItem(item);
   };
 
   const orderHandler = () => {
@@ -28,9 +28,9 @@ const Cart = (props) => {
   };
 
   const submitOrderHandler = async (userData) => {
-    setIsSubmiting(true);
+    setIsSubmitting(true);
     await fetch(
-      "https://react-http-request-food-app-default-rtdb.firebaseio.com/orders.js",
+      "https://react-http-request-food-app-default-rtdb.firebaseio.com/orders.json",
       {
         method: "POST",
         body: JSON.stringify({
@@ -39,8 +39,8 @@ const Cart = (props) => {
         }),
       }
     );
-    setIsSubmiting(false);
-    didSubmit(true);
+    setIsSubmitting(false);
+    setDidSubmit(true);
     cartCtx.clearCart();
   };
 
@@ -72,7 +72,7 @@ const Cart = (props) => {
     </div>
   );
 
-  const cartModelContent = (
+  const cartModalContent = (
     <React.Fragment>
       {cartItems}
       <div className={classes.total}>
@@ -86,12 +86,11 @@ const Cart = (props) => {
     </React.Fragment>
   );
 
-  const isSubmitingModalContent = <p>Sending order data...</p>;
+  const isSubmittingModalContent = <p>Sending order data...</p>;
 
   const didSubmitModalContent = (
     <React.Fragment>
-      {" "}
-      <p>Successfully sent the order!</p>;
+      <p>Successfully sent the order!</p>
       <div className={classes.actions}>
         <button className={classes.button} onClick={props.onClose}>
           Close
@@ -102,9 +101,9 @@ const Cart = (props) => {
 
   return (
     <Modal onClose={props.onClose}>
-      {!isSubmiting && !didSubmit && cartModelContent}{" "}
-      {isSubmiting && isSubmitingModalContent}
-      {!isSubmiting && didSubmit && didSubmitModalContent}
+      {!isSubmitting && !didSubmit && cartModalContent}
+      {isSubmitting && isSubmittingModalContent}
+      {!isSubmitting && didSubmit && didSubmitModalContent}
     </Modal>
   );
 };
